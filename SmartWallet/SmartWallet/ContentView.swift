@@ -34,23 +34,59 @@ struct ContentView: View {
 
             List {
 
-                ForEach(despesas) { despesa in
+                // Estado vazio
+                if despesas.isEmpty {
 
-                    VStack(alignment: .leading, spacing: 5) {
+                    VStack(spacing: 15) {
 
-                        Text(despesa.nome ?? "")
+                        Image(systemName: "tray")
+                            .font(.system(size: 50))
+                            .foregroundColor(.gray)
+
+                        Text("Nenhuma despesa cadastrada")
                             .font(.headline)
 
-                        Text("Categoria: \(despesa.categoria ?? "")")
+                        Text("Adicione uma nova despesa no botão +")
+                            .font(.subheadline)
+                            .foregroundColor(.gray)
+                    }
+                    .frame(maxWidth: .infinity, minHeight: 300)
+                }
 
-                        Text("Mês: \(despesa.mes ?? "")")
+                ForEach(despesas) { despesa in
+
+                    HStack(spacing: 15) {
+
+                        Image(
+                            systemName: iconeCategoria(
+                                despesa.categoria ?? ""
+                            )
+                        )
+                        .font(.title2)
+                        .foregroundColor(.blue)
+
+                        VStack(alignment: .leading, spacing: 5) {
+
+                            Text(despesa.nome ?? "")
+                                .font(.headline)
+
+                            Text(despesa.categoria ?? "")
+                                .font(.subheadline)
+                                .foregroundColor(.gray)
+
+                            Text(despesa.mes ?? "")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+
+                        Spacer()
 
                         Text(
-                            "Valor: R$ \(despesa.valor, specifier: "%.2f")"
+                            "R$ \(despesa.valor, specifier: "%.2f")"
                         )
                         .fontWeight(.bold)
                     }
-                    .padding(.vertical, 5)
+                    .padding(.vertical, 8)
                 }
                 .onDelete(perform: deletarDespesa)
             }
@@ -105,6 +141,40 @@ struct ContentView: View {
             let nsError = error as NSError
 
             fatalError("Erro ao salvar: \(nsError)")
+        }
+    }
+
+    // Retorna ícone conforme categoria
+    private func iconeCategoria(_ categoria: String) -> String {
+
+        switch categoria {
+
+        case "Energia":
+            return "bolt.fill"
+
+        case "Internet":
+            return "wifi"
+
+        case "Água":
+            return "drop.fill"
+
+        case "Assinaturas":
+            return "tv.fill"
+
+        case "Aluguel":
+            return "house.fill"
+
+        case "Mercado":
+            return "cart.fill"
+
+        case "Cursos":
+            return "book.fill"
+
+        case "Lazer":
+            return "gamecontroller.fill"
+
+        default:
+            return "dollarsign.circle.fill"
         }
     }
 }
