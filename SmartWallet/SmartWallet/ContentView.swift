@@ -13,7 +13,10 @@ struct ContentView: View {
     @Environment(\.managedObjectContext)
     private var viewContext
 
-    // Busca as despesas salvas
+    // Controla abertura da tela de cadastro
+    @State private var mostrarNovaDespesa = false
+
+    // Busca despesas salvas no Core Data
     @FetchRequest(
         sortDescriptors: [
             NSSortDescriptor(
@@ -56,30 +59,25 @@ struct ContentView: View {
 
                 ToolbarItem(placement: .navigationBarTrailing) {
 
-                    Button(action: adicionarDespesa) {
+                    Button {
+
+                        mostrarNovaDespesa = true
+
+                    } label: {
 
                         Label("Adicionar", systemImage: "plus")
                     }
                 }
             }
-        }
-    }
+            // Abre tela de cadastro
+            .sheet(isPresented: $mostrarNovaDespesa) {
 
-    // Adiciona uma despesa de exemplo
-    private func adicionarDespesa() {
-
-        withAnimation {
-
-            let novaDespesa = Despesa(context: viewContext)
-
-            novaDespesa.id = UUID()
-            novaDespesa.nome = "Internet"
-            novaDespesa.valor = 120.0
-            novaDespesa.categoria = "Internet"
-            novaDespesa.mes = "Maio"
-            novaDespesa.dataCriacao = Date()
-
-            salvarContexto()
+                NovaDespesaView()
+                    .environment(
+                        \.managedObjectContext,
+                        viewContext
+                    )
+            }
         }
     }
 
