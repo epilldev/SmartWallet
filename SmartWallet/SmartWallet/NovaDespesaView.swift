@@ -38,7 +38,14 @@ struct NovaDespesaView: View {
         "Fevereiro",
         "Março",
         "Abril",
-        "Maio"
+        "Maio",
+        "Junho",
+        "Julho",
+        "Agosto",
+        "Setembro",
+        "Outubro",
+        "Novembro",
+        "Dezembro"
     ]
 
     var body: some View {
@@ -47,53 +54,141 @@ struct NovaDespesaView: View {
 
             Form {
 
+                // Cabeçalho visual
+                Section {
+
+                    VStack(spacing: 10) {
+
+                        Image(systemName: "creditcard.fill")
+                            .font(.system(size: 45))
+                            .foregroundColor(.blue)
+
+                        Text("Nova Despesa")
+                            .font(.title2)
+                            .fontWeight(.bold)
+
+                        Text(
+                            "Adicione uma nova despesa doméstica ao SmartWallet."
+                        )
+                        .font(.subheadline)
+                        .foregroundColor(.gray)
+                        .multilineTextAlignment(.center)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 10)
+
+                }
+
+                // Informações principais
                 Section("Informações") {
 
-                    TextField(
-                        "Nome da despesa",
-                        text: $nome
-                    )
+                    HStack {
 
-                    TextField(
-                        "Valor",
-                        text: $valor
-                    )
-                    .keyboardType(.decimalPad)
+                        Image(systemName: "textformat")
+                            .foregroundColor(.blue)
+
+                        TextField(
+                            "Nome da despesa *",
+                            text: $nome
+                        )
+                    }
+
+                    HStack {
+
+                        Image(systemName: "dollarsign.circle.fill")
+                            .foregroundColor(.green)
+
+                        TextField(
+                            "Valor *",
+                            text: $valor
+                        )
+                        .keyboardType(.decimalPad)
+                    }
+
+                    Text("* Campos obrigatórios")
+                        .font(.caption)
+                        .foregroundColor(.gray)
                 }
 
+                // Categoria
                 Section("Categoria") {
 
-                    Picker("Categoria", selection: $categoria) {
+                    HStack {
 
-                        ForEach(categorias, id: \.self) {
+                        Image(systemName: "tag.fill")
+                            .foregroundColor(.orange)
 
-                            Text($0)
+                        Picker(
+                            "Categoria",
+                            selection: $categoria
+                        ) {
+
+                            ForEach(categorias, id: \.self) {
+
+                                Text($0)
+                            }
                         }
                     }
                 }
 
+                // Mês
                 Section("Mês") {
 
-                    Picker("Mês", selection: $mes) {
+                    HStack {
 
-                        ForEach(meses, id: \.self) {
+                        Image(systemName: "calendar")
+                            .foregroundColor(.purple)
 
-                            Text($0)
+                        Picker("Mês", selection: $mes) {
+
+                            ForEach(meses, id: \.self) {
+
+                                Text($0)
+                            }
                         }
                     }
                 }
-            }
-            .navigationTitle("Nova Despesa")
-            .toolbar {
 
-                ToolbarItem(placement: .navigationBarTrailing) {
+                // Botão salvar
+                Section {
 
-                    Button("Salvar") {
+                    Button {
 
                         salvarDespesa()
+
+                    } label: {
+
+                        HStack {
+
+                            Spacer()
+
+                            Image(systemName: "checkmark.circle.fill")
+
+                            Text("Salvar Despesa")
+                                .fontWeight(.bold)
+
+                            Spacer()
+                        }
+                        .padding()
+                        .background(
+                            LinearGradient(
+                                colors: [.blue, .cyan],
+                                startPoint: .leading,
+                                endPoint: .trailing
+                            )
+                        )
+                        .foregroundColor(.white)
+                        .cornerRadius(15)
                     }
+                    // Impede salvar campos vazios
+                    .disabled(
+                        nome.trimmingCharacters(in: .whitespaces).isEmpty ||
+                        valor.trimmingCharacters(in: .whitespaces).isEmpty
+                    )
                 }
+                .listRowBackground(Color.clear)
             }
+            .navigationTitle("Cadastro")
         }
     }
 
